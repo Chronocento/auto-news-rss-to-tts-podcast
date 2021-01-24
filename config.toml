@@ -1,0 +1,22 @@
+[rss]
+title = "AutoNews"
+description = "Automatically generated podcast feed from RSS news. Code by Andrea Centorrino, andrea.centorrino(at)gmail.com"
+subtitle = ""
+file_name = "podcast_feed.rss"
+language = "en"
+logo = "logo.jpg"
+author = "Andrea Centorrino"
+email = ""
+
+[sources]
+list = ['https://www.engadget.com/rss.xml']
+
+[system]
+media_folder = "media_files"
+extension = "mp3"
+max_articles = 10
+interval = 7200
+
+[network]
+host = "http://*.duckdns.org"
+port = 5000
