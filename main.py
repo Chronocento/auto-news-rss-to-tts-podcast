@@ -1,4 +1,5 @@
 import os
+import os.path as path
 import threading
 import time
 import toml
@@ -19,15 +20,16 @@ def main():
     if os.path.isdir(configuration['system']['media_folder']) == False:
         os.mkdir(configuration['system']['media_folder'])
 
-    #Periodically retrieve news and convert to audio files
-    timed_execution(int(configuration['system']['interval']),configuration)
-
     #Change webserver target directory
     web_dir = os.path.join(os.path.dirname(__file__), configuration['system']['media_folder'])
     os.chdir(web_dir)
 
+    #Periodically retrieve news and convert to audio files
+    timed_execution(int(configuration['system']['interval']),configuration)
+
     #Start webserver, stop it with ctrl+c
-    server.Serve(int(configuration['network']['port']))
+    server.Serve(int(configuration['network']['port']),configuration['system']['media_folder'])
+    
 
 def podcast_flow(configuration):
     #Obtaining video links
@@ -52,7 +54,16 @@ def podcast_flow(configuration):
     create_rss.RSS(configuration).generate()
 
 def timed_execution(interval,configuration):
+    #Change target directory
+    web_dir = path.abspath(os.pardir)
+    os.chdir(web_dir)
+
     podcast_flow(configuration)
+    
+    #Change target directory
+    web_dir = os.path.join(os.path.dirname(__file__), configuration['system']['media_folder'])
+    os.chdir(web_dir)
+
     threading.Timer(interval, timed_execution,args=(interval,configuration,)).start()
 
 if __name__ == "__main__":
